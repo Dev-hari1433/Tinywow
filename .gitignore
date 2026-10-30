@@ -1,0 +1,20 @@
+# secrets
+.env
+.env.local
+.env*.local
+!/.env.example
+
+node_modules/
+.next/
+.data/
+.verify/
+.rea-capture/
+*.log
+next-env.d.ts
+
+# build/test artifacts
+tsconfig.tsbuildinfo
+
+# session handoff
+session-context.md
+.Clone-pending-context.md
