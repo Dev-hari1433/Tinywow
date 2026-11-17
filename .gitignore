@@ -18,3 +18,9 @@ tsconfig.tsbuildinfo
 # session handoff
 session-context.md
 .Clone-pending-context.md
+
+# agent tooling / local review output
+.agents/
+.qoder/
+.impeccable/
+skills-lock.json

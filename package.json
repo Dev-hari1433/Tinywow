@@ -15,6 +15,7 @@
     "probe:ai": "node scripts/probe-ai.mjs"
   },
   "dependencies": {
+    "@fortawesome/free-solid-svg-icons": "^7.3.1",
     "@napi-rs/canvas": "^0.1.65",
     "ag-psd": "^20.2.3",
     "docx": "^9.15.0",

@@ -1,0 +1,264 @@
+/* ==========================================================================
+   Icons + result previews.
+   Loaded after globals.css so these overrides win where they overlap.
+   ========================================================================== */
+
+/* ---------- icon tiles ---------- */
+
+.icon-tile {
+  --tint: color-mix(in srgb, var(--accent) 10%, #ffffff);
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 40px;
+  height: 40px;
+  background: var(--tint);
+  border: 1px solid color-mix(in srgb, var(--accent) 26%, transparent);
+  color: var(--accent);
+}
+.icon-tile.sm {
+  width: 30px;
+  height: 30px;
+}
+.icon-tile.lg {
+  width: 56px;
+  height: 56px;
+  border-width: 1px;
+}
+.icon-tile svg {
+  display: block;
+}
+
+/* ---------- list rows: icon + text + status ---------- */
+
+.strip {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.strip > div {
+  flex: 1;
+  min-width: 0;
+}
+.strip-go {
+  margin-left: auto;
+}
+.strip.out .icon-tile {
+  --accent: var(--grey-light);
+  opacity: 0.7;
+}
+
+/* ---------- feature plates carry a glyph ---------- */
+
+.feature-plate {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 18px;
+}
+.feature-plate span {
+  font-size: inherit;
+  font-weight: inherit;
+  letter-spacing: normal;
+  line-height: 1;
+  text-transform: none;
+  color: inherit;
+}
+.feature-glyph {
+  color: var(--accent);
+  transition: transform 420ms var(--ease);
+}
+.feature:hover .feature-glyph {
+  transform: scale(1.09);
+}
+.feature-format {
+  font-style: normal;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+/* ---------- tool page title ---------- */
+
+.item-title {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.item-title h1 {
+  margin: 0;
+}
+
+/* ---------- finder hits ---------- */
+
+.hit {
+  align-items: center;
+}
+.hit-icon {
+  display: flex;
+  color: var(--accent, var(--grey));
+  flex: none;
+}
+.hit-name {
+  min-width: 0;
+}
+
+/* ---------- uploaded file rows ---------- */
+
+.filelist li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.filelist .file-meta {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+  gap: 1px;
+}
+.filelist .name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.file-thumb {
+  width: 34px;
+  height: 34px;
+  flex: none;
+  object-fit: cover;
+  border: 1px solid var(--line);
+  background: var(--paper);
+}
+
+/* ---------- result outputs ---------- */
+
+.outputs li {
+  display: block;
+  padding: 14px 0;
+}
+.out-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.out-top .meta {
+  flex: 1;
+  min-width: 0;
+}
+.out-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+  font-size: 0.875rem;
+  color: var(--grey);
+}
+.out-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.btn-sm {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--ink);
+  background: var(--white);
+  color: var(--ink);
+  padding: 7px 12px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 160ms linear, color 160ms linear;
+}
+.btn-sm:hover {
+  background: var(--ink);
+  color: var(--white);
+}
+.btn-sm.primary {
+  background: var(--ink);
+  color: var(--white);
+}
+.btn-sm.primary:hover {
+  background: transparent;
+  color: var(--ink);
+}
+
+/* ---------- previews ---------- */
+
+.pv {
+  margin-top: 12px;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  overflow: hidden;
+}
+.pv img {
+  display: block;
+  width: 100%;
+  max-height: 420px;
+  object-fit: contain;
+  background: var(--white);
+}
+.pv video {
+  display: block;
+  width: 100%;
+  max-height: 420px;
+  background: #000;
+}
+.pv-audio {
+  padding: 12px;
+}
+.pv-audio audio {
+  display: block;
+  width: 100%;
+}
+.pv-pdf iframe {
+  display: block;
+  width: 100%;
+  height: 440px;
+  border: 0;
+  background: var(--white);
+}
+.pv-text {
+  margin: 0;
+  padding: 14px;
+  max-height: 320px;
+  overflow: auto;
+  background: var(--white);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.pv-loading {
+  padding: 14px;
+  font-size: 0.8125rem;
+  color: var(--grey);
+}
+
+@media (max-width: 640px) {
+  .item-title {
+    gap: 12px;
+  }
+  .icon-tile.lg {
+    width: 46px;
+    height: 46px;
+  }
+  .pv img,
+  .pv video {
+    max-height: 300px;
+  }
+  .pv-pdf iframe {
+    height: 320px;
+  }
+}

@@ -124,7 +124,7 @@ try {
       await waitHydrated(cdp, '.dropzone');
       await setFiles(cdp, [`${FIX}/alpha.pdf`, `${FIX}/beta.pdf`]);
       await pollEval(cdp, `document.querySelectorAll('.filelist li').length === 2`);
-      await cdp.eval(`document.querySelector('button.primary').click()`);
+      await cdp.eval(`document.querySelector('[data-testid=run]').click()`);
       const href = await pollEval(cdp, `(() => { const a = document.querySelector('.outputs a.dl'); return a ? a.getAttribute('href') : null; })()`);
       const info = await cdp.eval(`(async () => {
         const r = await fetch(${JSON.stringify(href)});
@@ -149,7 +149,7 @@ try {
         setter.call(el, 'https://example.com/proven');
         el.dispatchEvent(new Event('input', { bubbles: true }));
       })()`);
-      await cdp.eval(`document.querySelector('button.primary').click()`);
+      await cdp.eval(`document.querySelector('[data-testid=run]').click()`);
       const href = await pollEval(cdp, `(() => { const a = document.querySelector('.outputs a.dl'); return a ? a.getAttribute('href') : null; })()`);
       const info = await cdp.eval(`(async () => {
         const r = await fetch(${JSON.stringify(href)});
@@ -175,7 +175,7 @@ try {
         setter.call(el, '99');
         el.dispatchEvent(new Event('input', { bubbles: true }));
       })()`);
-      await cdp.eval(`document.querySelector('button.primary').click()`);
+      await cdp.eval(`document.querySelector('[data-testid=run]').click()`);
       const text = await pollEval(cdp, `document.querySelector('.alert.error')?.textContent || ''`);
       console.log(`      surfaced: ${JSON.stringify(text)}`);
     } finally { cdp.close(); }
