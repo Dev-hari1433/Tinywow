@@ -12,6 +12,7 @@
 //   AI_COOLDOWN_SECONDS (600), AI_TIMEOUT_MS (60000), AI_DEBUG=1
 import fs from 'node:fs';
 import path from 'node:path';
+import { DATA_DIR } from '../data-dir';
 
 export interface ChatMessage {
   role: 'system' | 'user' | 'assistant';
@@ -77,7 +78,6 @@ const SEEDS: ModelSpec[] = [
 
 const TRANSCRIBE_MODELS = ['whisper-large-v3-turbo', 'whisper-large-v3'];
 
-const DATA_DIR = path.join(process.cwd(), '.data');
 const HEALTH_FILE = path.join(DATA_DIR, 'ai-health.json');
 const DISCOVERY_FILE = path.join(DATA_DIR, 'ai-models.json');
 

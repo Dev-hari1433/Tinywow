@@ -24,3 +24,7 @@ session-context.md
 .qoder/
 .impeccable/
 skills-lock.json
+
+.vercel
+.env*
+!.env.example

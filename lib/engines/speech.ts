@@ -6,6 +6,7 @@ import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import { generateText, transcribeAudio } from '../ai/router';
 import { FFMPEG } from './media';
+import { DATA_DIR } from '../data-dir';
 import { EngineCtx, EngineOutput, UserError, baseName } from './types';
 
 const run = promisify(execFile);
@@ -59,7 +60,7 @@ async function findFfprobe(): Promise<string | null> {
 
 async function toolDir(): Promise<string> {
   if (cachedToolDir) return cachedToolDir;
-  const dir = path.join(process.cwd(), '.data', 'bin');
+  const dir = path.join(DATA_DIR, 'bin');
   await fs.mkdir(dir, { recursive: true });
   const place = async (src: string) => {
     const dest = path.join(dir, path.basename(src));

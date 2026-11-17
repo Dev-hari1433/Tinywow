@@ -2,6 +2,7 @@ import crypto from 'node:crypto';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { UPLOAD_DIR, insertFile, now } from '@/lib/db';
+import { blobMode, putBytes } from '@/lib/store';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -50,12 +51,18 @@ export async function POST(req: Request) {
     const id = crypto.randomUUID();
     const ext = path.extname(file.name).toLowerCase().slice(0, 10);
     const buffer = Buffer.from(await file.arrayBuffer());
-    const diskPath = path.join(UPLOAD_DIR, `${id}${ext}`);
-    await fs.writeFile(diskPath, buffer);
     const mime = file.type && file.type !== 'application/octet-stream'
       ? file.type
       : MIME_BY_EXT[ext] ?? 'application/octet-stream';
-    insertFile({ id, name: path.basename(file.name), mime, size: buffer.length, path: diskPath, created_at: now() });
+    const diskPath = blobMode
+      ? `tc/uploads/${id}${ext}`
+      : path.join(UPLOAD_DIR, `${id}${ext}`);
+    if (blobMode) {
+      await putBytes(diskPath, buffer, mime);
+    } else {
+      await fs.writeFile(diskPath, buffer);
+    }
+    await insertFile({ id, name: path.basename(file.name), mime, size: buffer.length, path: diskPath, created_at: now() });
     stored.push({ id, name: path.basename(file.name), size: buffer.length, mime });
   }
 

@@ -1,244 +1,349 @@
-# TinyClone
+<img src="docs/assets/banner.png" alt="TinyClone — every file job, done in one place" width="100%" />
 
-A full-stack reconstruction of **tinywow.com**'s file-tool product: the complete 253-tool
-catalog, with **210 of those tools processing real files end to end** on this server.
+<h1 align="center">TinyClone</h1>
 
-The inspected source site, its routes, its stack and its live upload contract are documented
-in [`docs/INSPECTION.md`](docs/INSPECTION.md) with the evidence IDs behind each claim.
+<p align="center">
+  <b>Every file job, done in one place.</b><br/>
+  253 everyday file tools in the browser — merge, shrink, convert, sign and tidy.
+  210 of them are wired to real engines, no account required.
+</p>
+
+<p align="center">
+  <a href="https://tinyclone-lake.vercel.app"><img src="https://img.shields.io/badge/%E2%96%B2_live_demo-tinyclone--lake.vercel.app-000?style=for-the-badge&logo=vercel&logoColor=white" alt="Live demo" /></a>
+  <a href="https://github.com/Dev-hari1433/Tinywow/stargazers"><img src="https://img.shields.io/github/stars/Dev-hari1433/Tinywow?style=for-the-badge&logo=github&color=14130f" alt="GitHub stars" /></a>
+  <a href="https://github.com/Dev-hari1433/Tinywow/network/members"><img src="https://img.shields.io/github/forks/Dev-hari1433/Tinywow?style=for-the-badge&logo=github&color=14130f" alt="GitHub forks" /></a>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Next.js-15.5-000?logo=nextdotjs&logoColor=white" alt="Next.js 15.5" />
+  <img src="https://img.shields.io/badge/React-19-087EA4?logo=react&logoColor=white" alt="React 19" />
+  <img src="https://img.shields.io/badge/TypeScript-5.7-3178C6?logo=typescript&logoColor=white" alt="TypeScript 5.7" />
+  <img src="https://img.shields.io/badge/Fluid_Compute-Vercel-000?logo=vercel&logoColor=white" alt="Vercel Fluid Compute" />
+  <img src="https://img.shields.io/badge/tools-253-14130f" alt="253 tools" />
+  <img src="https://img.shields.io/badge/ready-210-24735f" alt="210 ready" />
+  <img src="https://img.shields.io/badge/planned-43-9c6b16" alt="43 planned" />
+</p>
+
+<p align="center">
+  <a href="https://tinyclone-lake.vercel.app">Live app</a> ·
+  <a href="#features">Features</a> ·
+  <a href="#quick-start">Quick start</a> ·
+  <a href="#deploy-on-vercel">Deploy</a> ·
+  <a href="#api">API</a> ·
+  <a href="docs/INSPECTION.md">Inspection notes</a>
+</p>
+
+---
+
+## Screenshots
+
+<table>
+  <tr>
+    <td width="50%"><img src="docs/assets/screenshot-home.png" alt="TinyClone home page with the tool finder" /></td>
+    <td width="50%"><img src="docs/assets/screenshot-tool.png" alt="Merge PDF workspace with upload and result panes" /></td>
+  </tr>
+  <tr>
+    <td align="center"><sub><b>Home</b> — search, drop a file, or jump straight into a tool.</sub></td>
+    <td align="center"><sub><b>Any tool</b> — upload, pick two options, take the result.</sub></td>
+  </tr>
+</table>
+
+<p align="center">
+  <img src="docs/assets/screenshot-directory.png" alt="The 253-tool directory with Ready and Planned states" width="100%" />
+  <br/>
+  <sub><b>Directory</b> — every tool keeps its real name and route, and says whether it runs today.</sub>
+</p>
+
+---
+
+## What this is
+
+TinyClone is a full-stack reimplementation of a **tinywow.com**-style file toolbox: a single
+catalogue of 253 tools across six categories, a server that processes the files with real
+libraries, and a workbench UI that gets out of the way.
+
+The honest part: **210 tools run end to end**, and the remaining **43 are marked Planned** with
+the concrete missing dependency named on their page. Nothing silently returns your input file as
+a fake result.
 
 ```
-253 tools in 6 categories  ·  210 working  ·  43 explicitly planned (with reasons)
+253 tools · 6 categories · 210 ready · 43 planned · 1-hour retention · no accounts
 ```
 
-## What works, and what is honest about the rest
+| Category | In catalogue | Working | What lives there |
+|---|---:|---:|---|
+| 📄 PDF | 47 | 35 | Merge, split, compress, watermark, sign, annotate, extract text/images |
+| 🖼️ Image | 76 | 47 | Compress, resize, crop, convert, round corners, make memes, favicons |
+| 🎬 Video & audio | 59 | 59 | Trim, convert, mute, extract audio, GIFs, ringtones, format swaps |
+| ✍️ Write (AI) | 53 | 53 | Summarise, paraphrase, rewrite, generate copy, translate, transcribe |
+| 🔁 Converters | 13 | 11 | CSV ↔ Excel ↔ JSON ↔ XML, PDF ↔ images, documents ↔ text |
+| 🧰 Utilities | 5 | 5 | QR codes, Unix timestamps, hashes, lorem ipsum, colour tools |
 
-Every tool keeps its inspected name, route, parameters and category. A tool is marked **Ready**
-only when a real engine is wired to it; everything else is marked **Planned** and states the
-concrete missing dependency when you open it. Nothing returns the input file as a fake result.
+---
 
-| Category | In catalog | Working |
+## Features
+
+### The workbench
+- **Search-first landing page** — type "merge pdf" or "qr" and get the tool, not a marketing page.
+- **Drop-a-file finder** — drop any file and see which tools accept it.
+- **One workspace for every tool** — same upload pane, same option form, same result pane.
+- **Live job progress** — queued → running → done, with per-engine progress messages.
+- **Previews before download** — images, PDFs, audio and video render in the result pane.
+- **Signed, expiring links** — HMAC-signed download URLs that die with the file.
+
+### Processing
+- **Real engines, not wrappers** — `pdf-lib`, `pdfjs-dist`, `sharp`, `@napi-rs/canvas`,
+  `ffmpeg`, `xlsx`, `docx`, `pptxgenjs`, `mammoth`, `ag-psd`, `potrace`, `qrcode`.
+- **PDF**: merge, split, rotate, crop, compress, watermark, page numbers, sign, annotate,
+  extract text, extract images, PDF → JPG/PNG, JPG/PNG → PDF.
+- **Image**: compress, resize, crop, circle crop, convert between PNG/JPG/WebP/AVIF, add
+  images, add text, meme generator, favicon set, watermark, filters.
+- **Video/audio**: trim, convert containers and codecs, mute, strip audio, extract audio,
+  audio format conversion, video → GIF, GIF → video, ringtones.
+- **Data**: CSV/Excel/JSON/XML conversions, PDF tables → spreadsheet, document → text.
+- **AI writing**: 53 generators and rewriters with a five-provider fallback chain.
+- **Speech**: Whisper transcription, subtitle generation, YouTube summarising.
+
+### Platform
+- **No account, no cookies, no dashboard.** Open a tool and use it.
+- **One-hour retention** — links and files expire together; a sweep removes the bytes.
+- **Server-side processing** — files are not shipped to a third party for static tools.
+- **Accessible, responsive UI** — keyboard focus states, ARIA labels, mobile layout.
+- **Type-safe end to end** — strict TypeScript, no `any` in the catalog surface.
+
+### AI that degrades gracefully
+- Providers are tried in preference order, then by measured latency.
+- A failing model gets a cooldown (429 → 60 s, 5xx → 2 min, auth/unknown → 1 h) and is skipped.
+- When everything is cooling, the whole pool is retried instead of failing outright.
+- Health and the discovered free-model list persist between restarts.
+
+---
+
+## How it works
+
+```text
+Browser                    Next.js on Vercel                       Storage
+───────                    ──────────────────                      ───────
+drop file  ──upload──▶     /api/upload      ──bytes──▶             Vercel Blob (private)
+                                  │
+run tool   ──create──▶     /api/jobs        ──queue──▶ engine ──▶  Blob outputs
+                                  │                        │
+poll       ──status──▶     /api/jobs/[id]  ◀──progress────┘
+                                  │
+download   ──signed──▶     /api/download/[jobId]/[outputId] ──▶    streamed back
+```
+
+1. **Upload** — files go to private Blob storage (100 MB per file locally, 4.5 MB per request
+   on Vercel — see [platform notes](#vercel-platform-notes)).
+2. **Create job** — the server validates the tool, its file count and every declared parameter.
+   Unknown parameters never reach an engine.
+3. **Process** — the engine runs on Fluid Compute; inputs are staged to `/tmp`, outputs are
+   written back to Blob, and progress is written to the job record.
+4. **Take the copy** — the result pane polls the job, then shows a preview and a signed,
+   one-hour download link.
+
+### Storage strategy
+
+| Context | Metadata | Files |
 |---|---|---|
-| PDF | 47 | 35 |
-| Image | 76 | 47 |
-| Video | 59 | **59** |
-| Converters | 13 | 11 |
-| Write (AI) | 53 | **53** |
-| Utilities | 5 | **5** |
+| Local development | SQLite via `node:sqlite` in `.data/` | `.data/uploads`, `.data/outputs` |
+| Vercel | JSON blobs under `tc/jobs/*`, `tc/files/*` | private Vercel Blob under `tc/uploads/*`, `tc/outputs/*` |
 
-## Engine toolchains
+The switch is automatic: if `BLOB_STORE_ID` (or `BLOB_READ_WRITE_TOKEN`) is present, the app
+uses Blob, otherwise it uses the local filesystem. No code changes needed between the two.
 
-| Toolchain | Implementation |
-|---|---|
-| PDF | `pdf-lib` + `pdfjs-dist` + `@napi-rs/canvas` |
-| Image | `sharp` + canvas + `potrace` + `ag-psd` |
-| Video / audio | bundled `ffmpeg` 6.1.1 + `ffprobe` |
-| Spreadsheets / data | SheetJS `xlsx`, `pdf-lib` |
-| Utilities | `qrcode`, `jszip`, canvas |
-| AI text | `lib/ai/router.ts` → Groq / Gemini / Mistral / OpenRouter |
-| Speech | Groq Whisper (Mistral Voxtral fallback) + `yt-dlp` |
-| OCR / import | Mistral OCR (Gemini vision fallback), `mammoth`, `jszip` |
+---
 
-## Stack
+## Quick start
 
-- **Next.js 15 (App Router) + React 19 + TypeScript** — server components for the catalog,
-  one client component for the workspace.
-- **SQLite via `node:sqlite`** — jobs, uploaded file records, outputs. No external database.
-- **Filesystem storage** under `.data/` (uploads, outputs, temp), one hour retention.
-- **In-process queue** with concurrency 2; each job reports progress the UI polls.
-- **Signed download links** — HMAC over `jobId:outputId:exp`, checked in constant time.
-- **ffmpeg 6.1.1** and **ffprobe** ship with the app (`ffmpeg-static`), so video tools need no
-  system package. `FFMPEG_PATH` / `FFPROBE_PATH` override the bundled binaries.
-
-Static file tools contact nothing. Only the AI, OCR, speech and downloader tools reach the
-network, and only the bytes they need to.
-
-## The AI fallback chain
-
-`lib/ai/router.ts` fans every writing, summarising, translating, OCR and transcription request
-across five providers:
-
-| Provider | Env var | Role |
-|---|---|---|
-| Groq | `GROQ_API_KEY` | default text model (`qwen/qwen3.8-27b`) + Whisper speech-to-text |
-| Gemini | `GEMINI_API_KEY` | second text model, plus vision OCR fallback |
-| Mistral | `MISTRAL_API_KEY` | third text model, Mistral OCR, Voxtral transcription fallback |
-| OpenRouter | `OPENROUTER_API_KEY` | every free model it lists, appended as extra backups |
-| Bytez | `BYTEZ_API_KEY` | optional, only used when `BYTEZ_MODEL` names a model its catalog serves |
-
-Behaviour:
-
-- Models are ordered by preference, then by measured latency. The first healthy one answers.
-- A failure is classified and cooled down: `429` → 60 s, `5xx` → 2 min, `401/403` and unknown
-  models → 1 h. The failing model is skipped and the next one is tried, up to six attempts.
-- When a cooldown expires the model re-enters the pool, and once it answers the chain drifts
-  back to the default model automatically — no manual reset.
-- Health and the discovered free-model list persist in `.data/ai-health.json`, so a restart does
-  not lose what was learned.
-- If everything is cooling, the whole set is retried rather than failing outright.
-
-Inspect it live:
+**Requirements:** Node.js **22+** (24 LTS recommended — the app uses `node:sqlite`), npm 10+.
 
 ```bash
-curl localhost:3000/api/ai/status     # every model, its state, latency and last error
-npm run probe:ai                      # sweep every model on every provider, write .verify/ai-models.md
-```
+# 1. clone
+git clone https://github.com/Dev-hari1433/Tinywow.git
+cd Tinywow
 
-Knobs: `AI_PREFERRED_MODEL` (`groq:qwen/qwen3.8-27b`), `AI_PROVIDER`, `AI_COOLDOWN_SECONDS`,
-`AI_TIMEOUT_MS`, `AI_DEBUG=1`. See [`.env.example`](.env.example).
-
-## Pipeline
-
-```
-browser                         server
-───────                         ──────
-POST /api/upload        →  validate size/type, write .data/uploads/<uuid>
-                        ←  [{ id, name, size }]
-POST /api/jobs          →  validate tool + declared params + file ids
-                           enqueue(jobId)
-                        ←  { jobId }
-GET  /api/jobs/:id      →  { status, progress, message, outputs[] }
-                           outputs[].url = signed, expiring link
-GET  /api/download/...  →  verify HMAC + expiry, stream bytes
-```
-
-Engines run server-side in `lib/engines/*`, receive uploaded paths plus validated params, and
-return `{ name, mime, buffer }` outputs. The queue records failures with a user-facing message,
-which is what the UI renders (for example `Those pages do not exist in a 3-page document.`).
-
-## Layout
-
-```
-app/
-  page.tsx                     home: counts, categories, working highlights
-  tools/page.tsx               searchable catalog (253 entries, ready/planned badges)
-  [category]/[tool]/page.tsx   per-tool page; 404 when the route is not in the catalog
-  api/upload|jobs|download/…   the pipeline endpoints
-  api/ai/status                live AI fallback chain
-lib/
-  catalog.ts                   generated: 253 tools, params, engine id, file limits
-  ai/router.ts                 providers, free-model discovery, fallback, health, OCR, STT
-  engines/pdf.ts, pdf2.ts      merge/split/watermark + overlays, signing, Office exports
-  engines/image.ts, image2.ts  resize/convert + collage, charts, tracing, PSD, EPS
-  engines/media.ts             ffmpeg: transcode, compress, trim, GIF/WebP, subtitles
-  engines/ai.ts                53 write tools, PDF summariser and translator
-  engines/speech.ts            transcription, podcast summaries, YouTube, social downloads
-  engines/extra.ts             upscale, OCR, Word/PowerPoint/web page → PDF
-  engines/data.ts              CSV/JSON/XML/Excel/PDF tables
-  engines/other.ts             QR, lorem, timestamps, meme, ZIP
-  engines/index.ts             engine registry + per-engine file constraints
-  queue.ts, db.ts, signed.ts   job runner, storage, signing
-scripts/
-  gen-catalog.mjs              rebuilds lib/catalog.ts from the inspected inventory
-  probe-ai.mjs                 sweeps every AI model and reports pass/fail + latency
-  test-tools.mjs               end-to-end HTTP proof for the 142 offline tools
-  test-ai.mjs                  end-to-end HTTP proof for the network-backed tools
-  verify-semantics.mjs         page counts, rotation, watermark text, pixel dimensions
-  verify-routes.mjs            every catalog route renders with the right status
-  verify-ui.mjs                headless-Chrome proof of the real React workspace
-docs/INSPECTION.md             source-site inspection + evidence ledger
-```
-
-## Run it
-
-```bash
+# 2. install (downloads the bundled ffmpeg/ffprobe binaries)
 npm install
-cp .env.example .env.local   # add whichever provider keys you have
-npm run build
-npm start                    # http://localhost:3000
+
+# 3. configure the optional AI keys
+cp .env.example .env.local
+
+# 4. run
+npm run dev          # http://localhost:3000
 ```
 
-Development: `npm run dev`. If port 3000 is taken, `PORT=3100 npm start`.
+Static file tools work with **no keys at all**. AI, OCR, speech and YouTube tools light up when
+at least one provider key is present.
 
-The downloader tools need `python -m pip install yt-dlp`; everything else is bundled.
+### Environment variables
 
-## Verify it
+Every provider is optional; the AI router probes them at runtime and uses whatever answers.
 
-Start the server first; each script talks to it over HTTP (or CDP for the UI one).
-The scripts assume port 3000 — pass `BASE` for any other port.
+| Variable | Required | Purpose |
+|---|---|---|
+| `GROQ_API_KEY` | optional | Default text model (`qwen/qwen3.8-27b`) and Whisper transcription |
+| `GEMINI_API_KEY` | optional | Second text model and vision OCR fallback |
+| `MISTRAL_API_KEY` | optional | Third text model, Mistral OCR, Voxtral transcription |
+| `OPENROUTER_API_KEY` | optional | Every free model it lists, appended as extra fallbacks |
+| `BYTEZ_API_KEY` | optional | Only used when `BYTEZ_MODEL` names a model its catalogue serves |
+| `AI_PREFERRED_MODEL` | optional | Pin the first model, e.g. `groq:qwen/qwen3.8-27b` |
+| `AI_PROVIDER` | optional | Force one provider: `groq` / `gemini` / `mistral` / `openrouter` / `bytez` |
+| `AI_COOLDOWN_SECONDS` | optional | How long a failing model is skipped (default `600`) |
+| `AI_TIMEOUT_MS` | optional | Per-request deadline (default `60000`) |
+| `AI_DEBUG` | optional | `1` logs every model attempt to stderr |
+| `APP_SECRET` | recommended on Vercel | Fixed HMAC key so signed links verify across instances |
+| `BLOB_STORE_ID` | set by Vercel | Enables Blob storage instead of the local filesystem |
+| `FFMPEG_PATH` / `FFPROBE_PATH` | optional | Override the bundled media binaries |
+
+> **Never commit `.env.local`.** It is already ignored, together with `.env*.local`.
+
+---
+
+## Deploy on Vercel
+
+<p>
+  <a href="https://vercel.com/new/clone?repository-url=https://github.com/Dev-hari1433/Tinywow&project-name=tinyclone&repository-name=tinyclone"><img src="https://vercel.com/button" alt="Deploy with Vercel" /></a>
+</p>
+
+The repository is already connected to Vercel: every push to `main` builds a production
+deployment of **[tinyclone-lake.vercel.app](https://tinyclone-lake.vercel.app)**.
+
+### CLI route
 
 ```bash
-npm run test:tools       # 142/142 offline tools + 9/9 platform checks
-npm run test:ai          # 61/61 network-backed tools (downloaders skip without a link)
-npm run test:routes      # 253/253 tool pages render correctly
-npm run test:ui          # 3/3 real-browser checks
-npm run test:semantics   # 14/14 output-correctness checks
-npm run probe:ai         # every model on every provider, with latency
-
-BASE=http://127.0.0.1:3100 npm run test:tools
-TEST_LIVE=1 ONLY=youtube BASE=http://127.0.0.1:3100 npm run test:ai
+npm i -g vercel@latest
+vercel login
+vercel link                     # create or link the project
+vercel env add APP_SECRET       # paste a random 32+ character string
+vercel storage create tinyclone-blob --type blob --access private
+vercel storage connect tinyclone-blob
+vercel deploy --prod
 ```
 
-`test:tools` builds real fixtures — two 3-page PDFs, a PDF with an embedded photo, PNG/JPG/GIF/
-TIFF/WebP images, a real 2-second H.264/AAC clip transcoded into MP4/AVI/MKV/MOV/WebM plus MP3/
-WAV/M4A/AAC/OGG audio, an SRT, an XLSX workbook, a DOCX, a PPTX, an SVG, a TTF font and a PSD —
-then for each working tool uploads those files, creates a job, polls it, downloads every output
-and inspects the bytes with the matching library: PDFs must parse, images must decode, media must
-expose real streams and a duration through `ffprobe`, OOXML packages must contain their document
-part, XLSX must have rows, ZIPs must list entries. It also asserts the negative paths — planned
-tools refused with their reason, unsigned and tampered downloads rejected, empty uploads rejected,
-merge refusing a single file.
+### What to configure in the dashboard
 
-`test:ai` drives the same pipeline for the model-backed tools and checks the content, not the
-status code: a rewrite must differ from its input, `ai-detector` must return a score, a
-translation must contain translated words and a real PDF, OCR must read the rendered
-`HELLO WORLD`, a transcript must contain the spoken words, summaries must mention the source.
+| Setting | Value | Why |
+|---|---|---|
+| Framework preset | Next.js | Auto-detected |
+| Node.js version | 22.x or 24.x | `node:sqlite` built-in |
+| Function duration | 300 s (default on Fluid Compute) | Long PDFs and video jobs |
+| Blob store | private, connected | Uploads, outputs and job records |
+| Env vars | AI keys, `APP_SECRET` | AI tools and cross-instance signed links |
 
-`test:semantics` reads the produced bytes for correctness: a merged PDF has exactly 6 pages, split
-produces three 1-page files, rotate sets 90° on every page, the watermark string survives a round
-trip through the extract-text tool, `resize` returns exactly 160×120, `crop` returns the requested
-box, grayscale channel means match, the circle crop clears its corners, CSV→JSON preserves a
-quoted comma, and split CSV respects its row budget.
+### Vercel platform notes
 
-Latest run on this machine (production build, port 3100):
-**142/142 tools · 9/9 platform · 61/61 AI tools · 253/253 routes · 14/14 semantics.**
+- **4.5 MB request body limit.** Vercel Functions cap request bodies; local development
+  accepts up to 100 MB per file. Large video uploads therefore work locally, but not through the
+  hosted demo unless you upload straight to Blob from the browser.
+- **Serverless storage.** The app directory is read-only and `/tmp` is per-instance, which is
+  why uploads, outputs and job metadata live in Vercel Blob in production.
+- **Background work.** The job runs after the response using `waitUntil`, inside the
+  function's 300 s budget. Very long media jobs should be moved to a queue or a Daemon.
+- **Private Blob.** Outputs are only reachable through the signed download route; nothing is
+  publicly listable.
 
-`probe:ai` swept 76 candidate models and 19 answered; the rest are rate-limited or
-region-gated free models, which is exactly what the fallback chain exists for.
+---
 
-## Tool coverage
+## API
 
-- **PDF (35):** merge, split, compress, rotate, rearrange, delete pages, create, extract text,
-  PDF→text, render to JPG/PNG, JPG/PNG/GIF/TIFF/WebP→PDF, watermark, add text, edit, annotate,
-  add images, insert blank pages, crop, extract embedded images, sign, summarise, translate,
-  PDF→Word/PowerPoint/Excel/CSV/TIFF, and Word/PowerPoint/web page→PDF.
-- **Image (47):** compress, resize, crop, upscale 2-4x, grayscale, flip, pixelate, border, profile
-  photo, circle crop, combine, split grid, add images, collage, CSV→chart PNG, text→PNG,
-  font→PNG, remove a flat background colour, EXIF/metadata report, OCR to text,
-  JPG/PNG/TIFF→SVG tracing, SVG→PNG, PSD→JPG/PNG, PNG→EPS, and format conversions.
-- **Video/audio (59 — all of them):** every inspected conversion, compress (also AVI/MKV/MOV),
-  cutter, extract audio, mute, resize, video→GIF, video→animated WebP, burn-in subtitles,
-  audio/video→text with SRT, podcast transcription and summaries, YouTube transcripts and
-  summaries, plus Facebook/Instagram/TikTok/X downloads.
-- **Write (53 — all of them):** the full set from paraphrasing and grammar fixing through
-  articles, legal drafts, ad copy, scripts, translations and the local word counter.
-- **Converters (11):** CSV↔JSON/Excel, JSON↔XML, XML→CSV/Excel, Excel→XML/PDF, split CSV/Excel.
-- **Utilities (5):** QR code, lorem ipsum, Unix timestamp, meme maker, ZIP.
+| Method | Route | Purpose |
+|---|---|---|
+| `POST` | `/api/upload` | Multipart upload; returns file IDs and metadata |
+| `POST` | `/api/jobs` | Validate a tool + params and enqueue a job; returns `{ jobId }` |
+| `GET` | `/api/jobs/[id]` | Job status, progress, message and signed output URLs |
+| `GET` | `/api/download/[jobId]/[outputId]` | Stream an output; requires `exp` + `sig` |
+| `GET` | `/api/ai/status` | Health of every AI model in the fallback chain |
 
-### Planned (43), and exactly what each needs
+```bash
+# create a job
+curl -X POST https://tinyclone-lake.vercel.app/api/jobs \
+  -H 'content-type: application/json' \
+  -d '{"category":"write","slug":"paraphrasing","fileIds":[],"params":{"text":"Hello world"}}'
 
-| Blocker | Tools |
+# poll it
+curl https://tinyclone-lake.vercel.app/api/jobs/<jobId>
+```
+
+---
+
+## Tech stack
+
+| Layer | Choice |
 |---|---|
-| AI image models (segmentation, inpainting, generation) | `ai-image-generator`, `remove-bg`, `remove-objects`, `remove-person`, `remove-text-photo`, `remove-watermark-photo`, `unblur`, `colorize-photo`, `cleanup-picture`, `change-bg-photo`, `blur-background`, `translate` (12) |
-| Ghostscript / qpdf | `pdf/protect`, `pdf/unlock`, `pdf/from-eps`, `image/eps-to-jpg|png|svg` (6) |
-| Calibre | `pdf/from-azw3|epub|mobi`, `pdf/to-azw3|epub|mobi`, `converter/epub-to-azw3|mobi` (8) |
-| HEVC still-image decoder | `image/heic-to-jpg|png|avif`, `pdf/from-heic` (4) |
-| A Visio reader | `image/vsd-to-*`, `image/vsdx-to-*` (8) |
-| PSD vector export | `image/psd-to-ai`, `image/psd-to-svg` (2) |
-| Outlook MSG parser | `pdf/from-msg` (1) |
-| Watermark removal | `pdf/remove-watermark` (1) |
-| APNG encoder | `image/gif-to-apng` (1) |
+| Framework | Next.js 15.5 (App Router), React 19, TypeScript 5.7 |
+| Styling | Hand-written CSS with design tokens, self-hosted Archivo |
+| Icons | Font Awesome paths inlined through `lib/tool-icon.tsx` |
+| PDF | `pdf-lib`, `pdfjs-dist`, `@napi-rs/canvas` |
+| Images | `sharp`, canvas, `potrace`, `ag-psd`, `exifr` |
+| Media | bundled `ffmpeg-static` 6.1 + `ffprobe-static` |
+| Documents | `xlsx`, `docx`, `pptxgenjs`, `mammoth`, `jszip`, `marked` |
+| Utilities | `qrcode`, `jszip` |
+| Storage | `node:sqlite` + filesystem locally, Vercel Blob in production |
+| AI | five-provider router with health tracking and cooldowns |
+| Hosting | Vercel, Fluid Compute, private Blob, GitHub auto-deploy |
 
-## Security and data handling
+---
 
-- Uploads capped at 100 MB, empty files rejected, names sanitised before storage.
-- Only parameters declared in the catalog reach an engine; select values are validated against
-  their option list.
-- Download links are HMAC-signed and expire after one hour; verification is constant-time.
-- Files and outputs are deleted after the same hour (`sweepExpired` in `lib/db.ts`).
-- URL-based tools refuse non-http(s) schemes and private/loopback hosts before fetching.
-- Uploaded SVG/PSD/font files are parsed by libraries, never executed.
-- API keys live in `.env.local`, which is gitignored; the browser never sees them.
-- This is a local demo: there is no auth, no rate limiting and no metering layer, unlike the
-  original site's account/subscription system.
+## Project structure
 
-Not affiliated with the site it was reconstructed from.
+```text
+app/
+  page.tsx                  landing page: finder, categories, featured tools
+  tools/page.tsx            the 253-tool directory
+  [category]/[tool]/        one page per tool, from the catalogue
+  components/               Finder, CatalogBrowser, ToolWorkspace
+  api/
+    upload/                 multipart upload → Blob or disk
+    jobs/                   create job + poll status
+    download/               signed, expiring output stream
+    ai/status/              live model health
+lib/
+  catalog.ts                the whole 253-tool catalogue and its params
+  engines/                  pdf, image, media, data, speech, ai, other
+  ai/router.ts              provider discovery, ranking, fallbacks
+  db.ts                     SQLite or Blob-backed job store
+  store.ts                  Vercel Blob helpers (private reads/writes)
+  queue.ts                  in-process job runner with waitUntil
+  signed.ts                 HMAC download links
+public/fonts/               self-hosted Archivo subsets
+docs/
+  INSPECTION.md             source-site inspection evidence
+  assets/                   banner, logo, screenshots
+```
+
+---
+
+## Quality checks
+
+```bash
+npm run typecheck      # strict TypeScript, no emit
+npm run build          # production build
+npm run test:tools     # every wired engine against real fixtures
+npm run test:routes    # route + API contract checks
+npm run test:ui        # end-to-end workspace behaviour
+npm run test:semantics # catalogue honesty: ready vs planned
+npm run test:ai        # AI router fallback behaviour
+```
+
+---
+
+## Roadmap
+
+The 43 planned tools keep their real names, routes and categories; each page names what is
+missing. Highlights still on the shelf:
+
+- EPUB → MOBI / AZW3
+- HEIC → JPG / PNG / AVIF
+- PSD → AI / SVG, EPS → JPG / PNG / SVG
+- AI image generator, background blur and photo colourisation
+
+---
+
+## Disclaimer
+
+An independent reimplementation, rebuilt for study and demonstration. Not affiliated with,
+endorsed by, or connected to tinywow.com or its owners. Product names and tool labels are used
+descriptively; all processing runs on this project's own code and libraries.
+
+<p align="center"><sub>Built with Next.js · Deployed on Vercel · Files deleted after one hour</sub></p>

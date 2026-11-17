@@ -1,80 +1,88 @@
 import crypto from 'node:crypto';
 import fs from 'node:fs/promises';
 import path from 'node:path';
-import {
-  OUTPUT_DIR, TMP_DIR, getJob, insertOutput, jobFiles, updateJob,
-} from './db';
+import { waitUntil } from '@vercel/functions';
+import { OUTPUT_DIR, TMP_DIR, getJob, insertOutput, jobFiles, updateJob } from './db';
+import { blobMode, putBytes, readBytes } from './store';
 import { engineSpec } from './engines';
 import { UserError } from './engines/types';
 import { getTool } from './catalog';
 
-const globalRef = globalThis as unknown as {
-  __tinycloneQueue?: { running: number; pending: string[]; max: number };
-};
-
-function state() {
-  if (!globalRef.__tinycloneQueue) globalRef.__tinycloneQueue = { running: 0, pending: [], max: 2 };
-  return globalRef.__tinycloneQueue;
-}
-
 export function enqueue(jobId: string) {
-  const s = state();
-  s.pending.push(jobId);
-  pump();
-}
-
-function pump() {
-  const s = state();
-  while (s.running < s.max && s.pending.length) {
-    const id = s.pending.shift()!;
-    s.running++;
-    runJob(id)
-      .catch(() => { /* runJob records its own failures */ })
-      .finally(() => { s.running--; pump(); });
-  }
+  const task = runJob(jobId).catch(() => {
+    /* runJob records its own failures */
+  });
+  // On Vercel the response is sent before processing ends; keep the invocation alive.
+  if (process.env.VERCEL) waitUntil(task);
 }
 
 async function runJob(jobId: string) {
-  const job = getJob(jobId);
+  const job = await getJob(jobId);
   if (!job) return;
-  updateJob(jobId, { status: 'running', progress: 2, message: 'Starting' });
+  await updateJob(jobId, { status: 'running', progress: 2, message: 'Starting' });
   const tool = getTool(job.category, job.slug);
   const spec = engineSpec(tool?.engine ?? null);
   if (!tool || !spec) {
-    updateJob(jobId, { status: 'failed', error: 'This tool has no engine attached.', progress: 0 });
+    await updateJob(jobId, { status: 'failed', error: 'This tool has no engine attached.', progress: 0 });
     return;
   }
 
   const workDir = path.join(TMP_DIR, jobId);
   await fs.mkdir(workDir, { recursive: true });
-  const files = jobFiles(jobId).map((f) => ({ id: f.id, name: f.name, mime: f.mime, path: f.path }));
+  const files = await jobFiles(jobId);
 
+  // Blob inputs have to be staged on disk before an engine can read them.
+  const staged = [] as { id: string; name: string; mime: string; path: string }[];
+  for (const f of files) {
+    if (!blobMode) {
+      staged.push({ id: f.id, name: f.name, mime: f.mime, path: f.path });
+      continue;
+    }
+    const bytes = await readBytes(f.path);
+    if (!bytes) throw new UserError('One of the uploaded files expired. Upload again.');
+    const local = path.join(workDir, `${f.id}-${path.basename(f.path)}`);
+    await fs.writeFile(local, bytes);
+    staged.push({ id: f.id, name: f.name, mime: f.mime, path: local });
+  }
+
+  let lastProgressWrite = 0;
   try {
     const outputs = await spec.fn({
-      files,
+      files: staged,
       params: JSON.parse(job.params) as Record<string, string>,
       fixed: tool.fixed,
-      progress: (pct, message) => updateJob(jobId, { progress: Math.min(99, Math.max(0, pct)), message: message ?? null }),
+      progress: (pct, message) => {
+        const at = Date.now();
+        if (blobMode && at - lastProgressWrite < 1200) return;
+        lastProgressWrite = at;
+        void updateJob(jobId, { progress: Math.min(99, Math.max(0, pct)), message: message ?? null });
+      },
     });
 
     if (!outputs.length) throw new UserError('The engine produced no output.');
     const jobDir = path.join(OUTPUT_DIR, jobId);
-    await fs.mkdir(jobDir, { recursive: true });
+    if (!blobMode) await fs.mkdir(jobDir, { recursive: true });
     for (const out of outputs) {
       const id = crypto.randomUUID();
       const safe = out.name.replace(/[^\w.\-() ]+/g, '_').slice(0, 120) || 'output';
-      const filePath = path.join(jobDir, `${id}-${safe}`);
-      await fs.writeFile(filePath, out.buffer);
-      insertOutput({
+      const storedPath = blobMode
+        ? `tc/outputs/${jobId}/${id}-${safe}`
+        : path.join(jobDir, `${id}-${safe}`);
+      if (blobMode) {
+        await putBytes(storedPath, out.buffer, out.mime);
+      } else {
+        await fs.writeFile(storedPath, out.buffer);
+      }
+      await insertOutput({
         id,
         job_id: jobId,
         name: safe,
         mime: out.mime,
         size: out.buffer.length,
-        path: filePath,
+        path: storedPath,
       });
     }
-    updateJob(jobId, {
+    await updateJob(jobId, {
       status: 'done',
       progress: 100,
       message: `${outputs.length} file${outputs.length === 1 ? '' : 's'} ready`,
@@ -84,7 +92,7 @@ async function runJob(jobId: string) {
     const message = err instanceof UserError
       ? err.message
       : `Processing failed: ${(err as Error).message ?? 'unknown error'}`;
-    updateJob(jobId, { status: 'failed', progress: 0, message: null, error: message.slice(0, 500) });
+    await updateJob(jobId, { status: 'failed', progress: 0, message: null, error: message.slice(0, 500) });
   } finally {
     await fs.rm(workDir, { recursive: true, force: true }).catch(() => {});
   }

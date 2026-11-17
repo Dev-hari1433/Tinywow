@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import { Readable } from 'node:stream';
 import { getOutput, markDownloaded } from '@/lib/db';
+import { blobMode, readBytes } from '@/lib/store';
 import { verifyDownload } from '@/lib/signed';
 
 export const runtime = 'nodejs';
@@ -15,19 +16,30 @@ export async function GET(
   if (!verifyDownload(jobId, outputId, url.searchParams.get('exp'), url.searchParams.get('sig'))) {
     return Response.json({ error: 'This download link is invalid or has expired.' }, { status: 403 });
   }
-  const output = getOutput(jobId, outputId);
-  if (!output || !fs.existsSync(output.path)) {
+  const output = await getOutput(jobId, outputId);
+  if (!output) {
     return Response.json({ error: 'That file is no longer available.' }, { status: 404 });
   }
 
-  markDownloaded(jobId);
+  const headers = {
+    'Content-Type': output.mime,
+    'Content-Length': String(output.size),
+    'Content-Disposition': `attachment; filename="${encodeURIComponent(output.name)}"; filename*=UTF-8''${encodeURIComponent(output.name)}`,
+    'Cache-Control': 'private, no-store',
+  };
+
+  if (blobMode) {
+    const bytes = await readBytes(output.path);
+    if (!bytes) return Response.json({ error: 'That file is no longer available.' }, { status: 404 });
+    await markDownloaded(jobId);
+    return new Response(new Uint8Array(bytes), { headers });
+  }
+
+  if (!fs.existsSync(output.path)) {
+    return Response.json({ error: 'That file is no longer available.' }, { status: 404 });
+  }
+
+  await markDownloaded(jobId);
   const stream = Readable.toWeb(fs.createReadStream(output.path)) as unknown as ReadableStream;
-  return new Response(stream, {
-    headers: {
-      'Content-Type': output.mime,
-      'Content-Length': String(output.size),
-      'Content-Disposition': `attachment; filename="${encodeURIComponent(output.name)}"; filename*=UTF-8''${encodeURIComponent(output.name)}`,
-      'Cache-Control': 'private, no-store',
-    },
-  });
+  return new Response(stream, { headers });
 }

@@ -6,10 +6,10 @@ export const dynamic = 'force-dynamic';
 
 export async function GET(_req: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const job = getJob(id);
+  const job = await getJob(id);
   if (!job) return Response.json({ error: 'Job not found.' }, { status: 404 });
 
-  const outputs = jobOutputs(id).map((o) => ({
+  const outputs = (await jobOutputs(id)).map((o) => ({
     id: o.id,
     name: o.name,
     mime: o.mime,

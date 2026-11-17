@@ -6,6 +6,8 @@ import { enqueue } from '@/lib/queue';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
+/** Processing continues after the response is sent, so give it room on Fluid Compute. */
+export const maxDuration = 300;
 
 interface Body {
   category?: string;
@@ -44,7 +46,7 @@ export async function POST(req: Request) {
     return Response.json({ error: `This tool accepts at most ${spec.maxFiles} files.` }, { status: 400 });
   }
   for (const id of fileIds) {
-    if (!getFile(id)) return Response.json({ error: 'One of the uploaded files expired. Upload again.' }, { status: 410 });
+    if (!(await getFile(id))) return Response.json({ error: 'One of the uploaded files expired. Upload again.' }, { status: 410 });
   }
 
   // Only declared params are accepted, so nothing unknown reaches an engine.
@@ -66,7 +68,7 @@ export async function POST(req: Request) {
   }
 
   const jobId = crypto.randomUUID();
-  insertJob({
+  await insertJob({
     id: jobId,
     category: tool.category,
     slug: tool.slug,
