@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  <a href="https://tinyclone-lake.vercel.app"><img src="https://img.shields.io/badge/%E2%96%B2_live_demo-tinyclone--lake.vercel.app-000?style=for-the-badge&logo=vercel&logoColor=white" alt="Live demo" /></a>
+  <a href="https://tinyclone-lake.vercel.app"><img src="https://img.shields.io/static/v1?label=Live%20demo&message=tinyclone-lake.vercel.app&color=000&logo=vercel&logoColor=white&style=for-the-badge" alt="Live demo" /></a>
   <a href="https://github.com/Dev-hari1433/Tinywow/stargazers"><img src="https://img.shields.io/github/stars/Dev-hari1433/Tinywow?style=for-the-badge&logo=github&color=14130f" alt="GitHub stars" /></a>
   <a href="https://github.com/Dev-hari1433/Tinywow/network/members"><img src="https://img.shields.io/github/forks/Dev-hari1433/Tinywow?style=for-the-badge&logo=github&color=14130f" alt="GitHub forks" /></a>
 </p>
